@@ -13,27 +13,21 @@ namespace Lab08_LINQInManhattan
         {
             DeserializeManhattanJSON();
         }
-        /*
-        IEnumerable<Feature>
-        */
+
         static void DeserializeManhattanJSON()
         {
             string dataPath = "../../../data.json";
             string jsonData = "";
 
-            // using streamreader to access the file. 
             using (StreamReader sr = File.OpenText(dataPath))
             {
-                // get all the text
                 jsonData = sr.ReadToEnd();
             }
 
-            // deserialize the JSON to convert to the Quotes object. 
-            List<Feature> myQuotes = JsonConvert.DeserializeObject<List<Feature>>(jsonData);
+            // This is where the deserialization happens.
+            IEnumerable<RootObject> myQuotes = JsonConvert.DeserializeObject<List<RootObject>>(jsonData);
 
-
-            // Lambda expression to get all the quotes from 
-            // Dr. Seuss.
+            // LINQ method
             var features = myQuotes.Select(x => x);
 
             Console.WriteLine(features.GetType());
