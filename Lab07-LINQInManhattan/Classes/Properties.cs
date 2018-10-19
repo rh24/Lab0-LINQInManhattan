@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Lab07_LINQInManhattan.Classes
+namespace Lab08_LINQInManhattan.Classes
 {
     public class Properties
     {
