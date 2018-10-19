@@ -25,12 +25,35 @@ namespace Lab08_LINQInManhattan
             }
 
             // This is where the deserialization happens.
-            IEnumerable<RootObject> myQuotes = JsonConvert.DeserializeObject<List<RootObject>>(jsonData);
+            var rootObjects = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
-            // LINQ method
-            var features = myQuotes.Select(x => x);
+            /* I want to figure out why this won't work.
 
-            Console.WriteLine(features.GetType());
+                IEnumerable<RootObject> explicitCastRootObjects = (IEnumerable<RootObject>)Convert.ChangeType(JsonConvert.DeserializeObject<RootObject>(jsonData), typeof(IEnumerable<RootObject>));
+                var features = explicitCastRootObjects.Select(x => x.Features);
+
+            */
+
+            // LINQ method syntax to filter out neighborhoods that don't have names
+            var filterOutEmptyNames = rootObjects.Features.Where(x => x.Properties.Neighborhood != "");
+
+            // Select the actual neighborhood property, which is a string
+            var selectNeighborhoodProperty = filterOutEmptyNames.Select(x => x.Properties.Neighborhood);
+
+            // Grab unique neighborhoods, no duplicates
+            var uniqueNeighborhoods = selectNeighborhoodProperty.Distinct();
+
+            // Consolidated LINQ method syntax on the List<Feature> property "Features" of RootObject
+            var singleQueryLambda = rootObjects.Features
+                                .Where(x => x.Properties.Neighborhood != "")
+                                .Select(x => x.Properties.Neighborhood)
+                                .Distinct();
+
+            foreach (var n in uniqueNeighborhoods)
+            {
+                Console.WriteLine(n.ToString());
+            }
+
         }
     }
 }
