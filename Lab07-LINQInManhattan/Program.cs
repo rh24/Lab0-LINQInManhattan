@@ -27,13 +27,6 @@ namespace Lab08_LINQInManhattan
             // This is where the deserialization happens.
             var rootObjects = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
-            /* I want to figure out why this won't work.
-
-                IEnumerable<RootObject> explicitCastRootObjects = (IEnumerable<RootObject>)Convert.ChangeType(JsonConvert.DeserializeObject<RootObject>(jsonData), typeof(IEnumerable<RootObject>));
-                var features = explicitCastRootObjects.Select(x => x.Features);
-
-            */
-
             // LINQ method syntax to filter out neighborhoods that don't have names
             var filterOutEmptyNames = rootObjects.Features.Where(x => x.Properties.Neighborhood != "");
 
@@ -49,11 +42,25 @@ namespace Lab08_LINQInManhattan
                                 .Select(x => x.Properties.Neighborhood)
                                 .Distinct();
 
+            Console.WriteLine("------------------- Here is the ouput with method syntax: -----------------------");
+            // Print out distinct neighborhoods using singleQueryLambda
             foreach (var n in uniqueNeighborhoods)
             {
                 Console.WriteLine(n.ToString());
             }
 
+            // Rewrite the consolidated lambda into query syntax. Unable to select distinct with this syntax.
+            var querySyntaxNonEmptyNeighborhoods = from feature in rootObjects.Features
+                                                   where feature.Properties.Neighborhood != ""
+                                                   select feature.Properties.Neighborhood;
+
+            var distinctQueriedNeighborhoods = querySyntaxNonEmptyNeighborhoods.Distinct();
+
+            Console.WriteLine("------------------- Here is the ouput with query syntax: -----------------------");
+            foreach (var n in distinctQueriedNeighborhoods)
+            {
+                Console.WriteLine(n.ToString());
+            }
         }
     }
 }
